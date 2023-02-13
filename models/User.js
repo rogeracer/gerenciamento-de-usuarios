@@ -11,6 +11,11 @@ class User{
 		this._photo = photo;
 		this._admin = admin;
 		this._register = new Date();
+		this._id;
+	}
+
+	get id(){
+		return this._id;
 	}
 
 	get name(){
@@ -53,4 +58,69 @@ class User{
 		return this._register;
 	}
 
+	loadFromJSON(json){
+
+		for(let name in json){
+
+			if(name == "_register"){
+				this[name] = new Date(json[name]);
+				continue
+			}
+
+			this[name] = json[name]
+
+		}
+
+	}
+
+	getNewId(){
+
+		let userId = localStorage.getItem("userId");
+		if(!userId > 0){
+			userId = 0
+		};
+
+		userId++;
+		localStorage.setItem("userId", userId);
+		return userId
+
+	}
+
+	static getUsersStorage(){
+
+		let users = [];
+
+		if(localStorage.getItem("users")){
+			users = JSON.parse(localStorage.getItem("users"))
+		};
+
+		return users
+	}
+
+	save(){
+
+		let users = User.getUsersStorage();
+
+		if(this.id > 0){
+
+			users.map(u => u._id == this.id ? Object.assign(u,this) : u);
+
+		}else{
+
+			this._id = this.getNewId();
+
+			users.push(this);
+		};
+
+		localStorage.setItem("users", JSON.stringify(users));
+	}
+
+	remove(){
+
+		let users = User.getUsersStorage();
+
+		let newUsers = users.filter( u => u._id != this._id);
+
+		localStorage.setItem("users", JSON.stringify(newUsers));
+	}
 }

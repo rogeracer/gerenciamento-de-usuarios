@@ -1,1 +1,1 @@
-const controller = new UserController("form-user-create","table-users");
+const controller = new UserController("form-user-create","form-user-update","table-users");
